@@ -248,7 +248,7 @@ private:
     /*! Allocate node of at least \a size.
      *  Offset and actual size of the node are returned in \a offset and \a nsize.
      */
-    parcelerror _nodeAlloc(zu64 size, zu64 *offset, zu64 *nsize);
+    parcelerror _nodeAlloc(zu64 size, zu64 *offset, zu64 *nsize, bool bound = false);
     //! Add node at \a offset with \a size to the freelist.
     parcelerror _nodeFree(zu64 offset, zu64 size);
 

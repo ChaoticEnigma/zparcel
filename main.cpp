@@ -133,9 +133,12 @@ int cmd_store(ZFile *file, ZArray<ZString> args){
             err = parcel.storeList(uid, list);
             break;
         }
-        case ZParcel::FILEOBJ:
+        case ZParcel::FILEOBJ: {
+            ZClock clock;
             err = parcel.storeFile(uid, value);
+            LOG("Store Time: " << clock.getSecs() << " sec");
             break;
+        }
 
         default:
             LOG("FAIL - Unknown type");
@@ -216,7 +219,10 @@ int cmd_fetch(ZFile *file, ZArray<ZString> args){
                 return EXIT_FAILURE;
             }
 
+            ZClock clock;
             ZBinary blob = parcel.fetchBlob(did);
+            LOG("Read Time: " << clock.getSecs() << " sec");
+
             if(ofile.write(blob) != blob.size()){
                 LOG("FAIL - Writing file failed");
                 return EXIT_FAILURE;
@@ -257,7 +263,9 @@ int cmd_show(ZFile *file, ZArray<ZString> args){
 
     LOG("UID: " << uid.str());
 
+    ZClock clock;
     auto type = parcel.getType(uid);
+    LOG("Lookup Time: " << clock.getSecs() << " sec");
     if(type == ZParcel::UNKNOWNOBJ){
         ELOG("FAIL - Bad object type");
         return EXIT_FAILURE;
@@ -342,7 +350,7 @@ int cmd_root(ZFile *file, ZArray<ZString> args){
             LOG("FAIL - " << ZParcel::errorStr(err));
             return EXIT_FAILURE;
         }
-        LOG("OK - Set Root");
+        LOG("OK - Set Root " << uid.str());
     } else {
         LOG(parcel.getRoot().str());
     }

@@ -261,7 +261,7 @@ ZParcel::parcelerror ZParcel::storeFile(ZUID id, ZPath path){
         buff.clear();
         // Read 2^15 block
         if(infile.read(buff, 1 << 15) == 0)
-            return ERR_READ;
+            break;
         if(_file->write(buff.raw(), buff.size()) == 0)
             return ERR_WRITE;
     }
@@ -544,7 +544,7 @@ ZParcel::parcelerror ZParcel::_storeObject(ZUID id, objtype type, const ZBinary 
     // Allocate tree node
     zu64 offset;
     zu64 nsize;
-    RETERR(_nodeAlloc(tsize, &offset, &nsize));
+    RETERR(_nodeAlloc(tsize, &offset, &nsize, true));
 
 //    DLOG("New node " << HEX(offset) << " " << nsize);
 
@@ -691,7 +691,7 @@ ZParcel::parcelerror ZParcel::_getObjectInfo(ZUID id, ObjectInfo *info){
     return ERR_MAX_DEPTH;
 }
 
-ZParcel::parcelerror ZParcel::_nodeAlloc(zu64 size, zu64 *offset, zu64 *nsize){
+ZParcel::parcelerror ZParcel::_nodeAlloc(zu64 size, zu64 *offset, zu64 *nsize, bool bound){
     zu64 next = _header->freehead;
     zu64 fsize;
     zu64 fnext;
@@ -741,9 +741,23 @@ ZParcel::parcelerror ZParcel::_nodeAlloc(zu64 size, zu64 *offset, zu64 *nsize){
             // Got first free entry large enough
 //            DLOG("Free node " << HEX(next) << " " << fnode.size);
 
-            fsize = fnode.size;
-            fnext = fnode.next;
-            break;
+//            if(bound){
+//                // Check that beginning and end of node are in the same 4 KiB-aligned block
+//                zu64 moff = next >> 12;
+//                zu64 mend = (next + size - 1) >> 12;
+//                if(moff == mend){
+//                    fsize = fnode.size;
+//                    fnext = fnode.next;
+//                    break;
+//                } else if(fnode.size - (((moff + 1) << 12) - next) > size){
+
+//                }
+
+//            } else {
+                fsize = fnode.size;
+                fnext = fnode.next;
+                break;
+//            }
         }
 
         // next node
@@ -820,7 +834,7 @@ ZParcel::parcelerror ZParcel::_nodeFree(zu64 offset, zu64 size){
 // /////////////////////////////////////////////////////////////////////////////
 
 zu64 ZParcel::ParcelObjectAccessor::read(zbyte *dest, zu64 size){
-    DLOG("Obj read " << HEX(_base + _pos) << " " << size);
+//    DLOG("Obj read " << HEX(_base + _pos) << " " << size);
 
     if(_file->seek(_base + _pos) != _base + _pos)
         throw ZException("ParcelObjectAccessor bad seek");
@@ -840,7 +854,7 @@ zu64 ZParcel::ParcelObjectAccessor::write(const zbyte *src, zu64 size){
     if(_file->write(src, sz) != sz)
         throw ZException("ParcelObjectAccessor bad write");
 
-    DLOG("Obj write OK " << HEX(_base + _pos) << " " << size << " " << sz);
+//    DLOG("Obj write OK " << HEX(_base + _pos) << " " << size << " " << sz);
 
     _pos += sz;
     return sz;
