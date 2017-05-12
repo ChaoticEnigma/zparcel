@@ -7,9 +7,10 @@ Goals include low size overhead and fast fetching of single objects, identified 
 
 Built with CMake:
 
+    git clone --recursive https://github.com/ChaoticConundrum/zparcel.git zparcel
     mkdir zparcel-build
     cd zparcel-build
-    cmake ../zparcel
+    cmake ../zparcel -DLIBCHAOS_SHARED=1 -DDISABLE_ZPNG=1 -DDISABLE_ZJPEG=1 -DDISABLE_ZWEBP=1 -DDISABLE_ZDATABASE=1
     make
 
 ## Usage
