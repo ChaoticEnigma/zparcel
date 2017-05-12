@@ -34,12 +34,12 @@ Show info about an object
 
     zparcel <file> show <id>
 
-### Examples
+### Example
 
     $ zparcel data.parcel create
     OK - Create data.parcel
 
-    $ zparcel data.parcel aed31427-72ac-47c9-8abc-66082c7148b7 random string "test zparcel string"
+    $ zparcel data.parcel store aed31427-72ac-47c9-8abc-66082c7148b7 string "test zparcel string"
     OK aed31427-72ac-47c9-8abc-66082c7148b7
 
     $ zparcel data.parcel show aed31427-72ac-47c9-8abc-66082c7148b7
