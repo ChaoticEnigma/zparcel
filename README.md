@@ -34,3 +34,20 @@ Show info about an object
 
     zparcel <file> show <id>
 
+### Examples
+
+    $ zparcel data.parcel create
+    OK - Create data.parcel
+
+    $ zparcel data.parcel aed31427-72ac-47c9-8abc-66082c7148b7 random string "test zparcel string"
+    OK aed31427-72ac-47c9-8abc-66082c7148b7
+
+    $ zparcel data.parcel show aed31427-72ac-47c9-8abc-66082c7148b7
+    UID: aed31427-72ac-47c9-8abc-66082c7148b7
+    Lookup Time: 1.1949e-05 sec
+    Type: string
+    Data: zparcel test string
+
+    $ zparcel data.parcel fetch aed31427-72ac-47c9-8abc-66082c7148b7
+    zparcel test string
+
